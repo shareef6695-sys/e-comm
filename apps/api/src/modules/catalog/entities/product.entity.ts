@@ -1,6 +1,7 @@
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, ManyToOne, JoinColumn, OneToMany } from 'typeorm';
 import { Tenant } from '../../tenants/entities/tenant.entity';
 import { ProductVariant } from './product-variant.entity';
+import { Category } from './category.entity';
 
 @Entity('products')
 export class Product {
@@ -13,6 +14,13 @@ export class Product {
   @ManyToOne(() => Tenant)
   @JoinColumn({ name: 'tenant_id' })
   tenant: Tenant;
+
+  @Column({ name: 'category_id', type: 'uuid', nullable: true })
+  categoryId: string;
+
+  @ManyToOne(() => Category, { nullable: true })
+  @JoinColumn({ name: 'category_id' })
+  category: Category;
 
   @Column()
   name: string;

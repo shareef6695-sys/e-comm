@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Request, Param, UseGuards, BadRequestException } from '@nestjs/common';
+import { Controller, Get, Post, Put, Delete, Body, Request, Param, UseGuards, BadRequestException } from '@nestjs/common';
 import { CatalogService } from './catalog.service';
 import { AuthGuard } from '@nestjs/passport';
 
@@ -23,6 +23,20 @@ export class CatalogController {
   findProduct(@Request() req, @Param('id') id: string) {
     if (!req.tenant) throw new BadRequestException('Tenant required');
     return this.catalogService.findProductOne(req.tenant.id, id);
+  }
+
+  @UseGuards(AuthGuard('jwt'))
+  @Put('products/:id')
+  updateProduct(@Request() req, @Param('id') id: string, @Body() data: any) {
+    if (!req.tenant) throw new BadRequestException('Tenant required');
+    return this.catalogService.updateProduct(req.tenant.id, id, data);
+  }
+
+  @UseGuards(AuthGuard('jwt'))
+  @Delete('products/:id')
+  deleteProduct(@Request() req, @Param('id') id: string) {
+    if (!req.tenant) throw new BadRequestException('Tenant required');
+    return this.catalogService.deleteProduct(req.tenant.id, id);
   }
 
   @UseGuards(AuthGuard('jwt'))
