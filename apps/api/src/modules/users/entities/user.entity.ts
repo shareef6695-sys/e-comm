@@ -1,11 +1,6 @@
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, ManyToOne, JoinColumn } from 'typeorm';
 import { Tenant } from '../../tenants/entities/tenant.entity';
-
-export enum UserRole {
-  ADMIN = 'admin',
-  STAFF = 'staff',
-  CUSTOMER = 'customer',
-}
+import { Role } from './role.entity';
 
 @Entity('users')
 export class User {
@@ -25,14 +20,21 @@ export class User {
   @Column({ name: 'password_hash', nullable: true })
   passwordHash: string;
 
+  @Column({ name: 'google_id', nullable: true })
+  googleId: string;
+
   @Column({ name: 'first_name', nullable: true })
   firstName: string;
 
   @Column({ name: 'last_name', nullable: true })
   lastName: string;
 
-  @Column({ type: 'enum', enum: UserRole, default: UserRole.CUSTOMER })
-  role: UserRole;
+  @Column({ name: 'role_id', type: 'uuid', nullable: true })
+  roleId: string;
+
+  @ManyToOne(() => Role)
+  @JoinColumn({ name: 'role_id' })
+  role: Role;
 
   @Column({ name: 'is_staff', default: false })
   isStaff: boolean;

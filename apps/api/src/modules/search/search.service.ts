@@ -145,7 +145,7 @@ export class SearchService implements OnModuleInit {
 
     return {
       hits: result.body.hits.hits.map((hit: any) => ({ id: hit._id, ...hit._source })),
-      total: result.body.hits.total.value,
+      total: (result.body.hits.total as any).value ?? result.body.hits.total,
       facets: result.body.aggregations,
     };
   }
@@ -202,7 +202,7 @@ export class SearchService implements OnModuleInit {
 
     return {
       hits: result.body.hits.hits.map((hit: any) => ({ id: hit._id, ...hit._source })),
-      total: result.body.hits.total.value,
+      total: (result.body.hits.total as any).value ?? result.body.hits.total,
       facets: result.body.aggregations,
     };
   }

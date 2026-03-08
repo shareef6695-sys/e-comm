@@ -21,7 +21,7 @@ export class CatalogService {
     const product = this.productsRepository.create({ 
       ...productData, 
       tenantId 
-    });
+    }) as unknown as Product;
     
     // Auto-generate slug if not provided
     if (!product.slug && product.name) {
