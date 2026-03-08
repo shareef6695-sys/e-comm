@@ -31,12 +31,29 @@ export default function EditProductPage({ params }: { params: { id: string } }) 
     }
   };
 
-  if (loading) return <div>Loading...</div>;
-  if (!product) return <div>Product not found</div>;
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center min-h-[400px]">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600"></div>
+      </div>
+    );
+  }
+  
+  if (!product) {
+    return (
+      <div className="text-center py-12">
+        <h3 className="text-lg font-medium text-gray-900">Product not found</h3>
+        <p className="mt-1 text-gray-500">The product you are looking for does not exist.</p>
+      </div>
+    );
+  }
 
   return (
-    <div>
-      <h1 className="text-2xl font-bold mb-6">Edit Product</h1>
+    <div className="max-w-4xl mx-auto">
+      <div className="mb-6">
+        <h1 className="text-2xl font-bold text-gray-900">Edit Product</h1>
+        <p className="text-sm text-gray-500 mt-1">Update product information</p>
+      </div>
       <ProductForm initialData={product} isEdit={true} />
     </div>
   );

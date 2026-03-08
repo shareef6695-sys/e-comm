@@ -30,7 +30,7 @@ export default function ProductForm({ initialData, isEdit = false }: ProductForm
         name: initialData.name || '',
         description: initialData.description || '',
         basePrice: initialData.basePrice || '',
-        categoryId: initialData.category?.id || '',
+        categoryId: initialData.categoryId || '',
         stockQuantity: initialData.stockQuantity || '',
         tags: initialData.tags ? initialData.tags.join(', ') : '',
       });
@@ -61,7 +61,7 @@ export default function ProductForm({ initialData, isEdit = false }: ProductForm
         ...formData,
         basePrice: parseFloat(formData.basePrice),
         stockQuantity: formData.stockQuantity ? parseInt(formData.stockQuantity) : undefined,
-        tags: formData.tags.split(',').map(t => t.trim()).filter(Boolean),
+        tags: formData.tags.split(',').map((t: string) => t.trim()).filter(Boolean),
       };
 
       if (isEdit && initialData?.id) {
@@ -80,102 +80,124 @@ export default function ProductForm({ initialData, isEdit = false }: ProductForm
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6 max-w-2xl bg-white p-6 rounded shadow">
+    <form onSubmit={handleSubmit} className="salla-card space-y-6 max-w-4xl mx-auto">
+      <div className="border-b border-gray-100 pb-4 mb-6">
+        <h3 className="text-lg font-bold text-gray-900">
+          {isEdit ? 'Edit Product' : 'Product Information'}
+        </h3>
+        <p className="text-sm text-gray-500">Fill in the details about your product</p>
+      </div>
+
       {error && (
-        <div className="bg-red-100 text-red-700 p-3 rounded">
+        <div className="bg-red-50 border border-red-100 text-red-600 px-4 py-3 rounded-lg flex items-center">
+          <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
           {error}
         </div>
       )}
 
-      <div>
-        <label className="block text-sm font-medium text-gray-700">Product Name</label>
-        <input
-          type="text"
-          name="name"
-          value={formData.name}
-          onChange={handleChange}
-          required
-          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border"
-        />
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="space-y-6">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Product Name</label>
+            <input
+              type="text"
+              name="name"
+              value={formData.name}
+              onChange={handleChange}
+              required
+              className="block w-full rounded-lg border-gray-200 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm py-2.5 px-3 border"
+              placeholder="e.g. Summer T-Shirt"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Price (SAR)</label>
+            <div className="relative rounded-md shadow-sm">
+              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <span className="text-gray-500 sm:text-sm">SAR</span>
+              </div>
+              <input
+                type="number"
+                name="basePrice"
+                value={formData.basePrice}
+                onChange={handleChange}
+                required
+                className="block w-full rounded-lg border-gray-200 pl-12 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm py-2.5 px-3 border"
+                placeholder="0.00"
+              />
+            </div>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Category</label>
+            <select
+              name="categoryId"
+              value={formData.categoryId}
+              onChange={handleChange}
+              className="block w-full rounded-lg border-gray-200 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm py-2.5 px-3 border"
+            >
+              <option value="">Select a Category</option>
+              {categories.map((cat) => (
+                <option key={cat.id} value={cat.id}>
+                  {cat.name}
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
+
+        <div className="space-y-6">
+           <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Stock Quantity</label>
+            <input
+              type="number"
+              name="stockQuantity"
+              value={formData.stockQuantity}
+              onChange={handleChange}
+              className="block w-full rounded-lg border-gray-200 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm py-2.5 px-3 border"
+              placeholder="0"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Tags</label>
+            <input
+              type="text"
+              name="tags"
+              value={formData.tags}
+              onChange={handleChange}
+              placeholder="summer, sale, new"
+              className="block w-full rounded-lg border-gray-200 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm py-2.5 px-3 border"
+            />
+            <p className="mt-1 text-xs text-gray-500">Separate tags with commas</p>
+          </div>
+        </div>
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700">Description</label>
+        <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
         <textarea
           name="description"
           value={formData.description}
           onChange={handleChange}
-          rows={3}
-          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border"
+          rows={4}
+          className="block w-full rounded-lg border-gray-200 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm py-2.5 px-3 border"
+          placeholder="Product description..."
         />
       </div>
 
-      <div className="grid grid-cols-2 gap-4">
-        <div>
-          <label className="block text-sm font-medium text-gray-700">Price ($)</label>
-          <input
-            type="number"
-            name="basePrice"
-            value={formData.basePrice}
-            onChange={handleChange}
-            required
-            step="0.01"
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border"
-          />
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium text-gray-700">Stock Quantity</label>
-          <input
-            type="number"
-            name="stockQuantity"
-            value={formData.stockQuantity}
-            onChange={handleChange}
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border"
-          />
-        </div>
-      </div>
-
-      <div>
-        <label className="block text-sm font-medium text-gray-700">Category</label>
-        <select
-          name="categoryId"
-          value={formData.categoryId}
-          onChange={handleChange}
-          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border"
-        >
-          <option value="">Select a category</option>
-          {categories.map(cat => (
-            <option key={cat.id} value={cat.id}>{cat.name}</option>
-          ))}
-        </select>
-        <p className="text-xs text-gray-500 mt-1">If empty, create a category first.</p>
-      </div>
-
-      <div>
-        <label className="block text-sm font-medium text-gray-700">Tags (comma separated)</label>
-        <input
-          type="text"
-          name="tags"
-          value={formData.tags}
-          onChange={handleChange}
-          placeholder="summer, sale, new"
-          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border"
-        />
-      </div>
-
-      <div className="flex justify-end space-x-3">
+      <div className="pt-6 border-t border-gray-100 flex justify-end space-x-3">
         <button
           type="button"
           onClick={() => router.back()}
-          className="bg-gray-200 text-gray-700 px-4 py-2 rounded hover:bg-gray-300"
+          className="btn-secondary"
         >
           Cancel
         </button>
         <button
           type="submit"
           disabled={loading}
-          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 disabled:opacity-50"
+          className="btn-primary"
         >
           {loading ? 'Saving...' : (isEdit ? 'Update Product' : 'Create Product')}
         </button>
